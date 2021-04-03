@@ -8,7 +8,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'blog.apps.BboardConfig',  #main apps 
+    'blog.apps.BlogConfig',  #main apps 
     'django.contrib.admin',     #admin apps 
     'django.contrib.auth',      #access rights
     'django.contrib.contenttypes',

@@ -14,3 +14,12 @@ class Post(models.Model):
         verbose_name = 'Post'
         ordering = ['-published']
 
+
+class Teg(models.Model):
+    name = models.CharField(max_length= 40,db_index = True ,
+                            verbose_name = 'tags name')
+
+    class Meta:
+        verbose_name_plural = 'tegs'
+        verbose_name = 'teg'
+        ordering = ['name']

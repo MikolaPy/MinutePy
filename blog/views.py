@@ -6,6 +6,6 @@ from django.shortcuts import render
 from .models import Post
 
 def index(request):
-    posts = Post.objects.order_by('-published')
+    posts = Post.objects.all()
     context = {'posts':posts}
     return render(request, 'blog/main.html',context)

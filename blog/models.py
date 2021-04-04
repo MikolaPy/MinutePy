@@ -13,10 +13,9 @@ class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject')
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
-    tags = models.ManyToManyField(
+    tegs = models.ManyToManyField(
                                     'Teg',
                                     related_name = 'posts', #access to records , instead Post_set 
-                                    null = True ,
                                     )
 
     class Meta:
@@ -28,7 +27,7 @@ class Post(models.Model):
         return self.title
 
 class Teg(models.Model):
-    name = models.CharField(max_length= 40,db_index = True ,
+    name = models.CharField(max_length= 40,unique=True,
                             verbose_name = 'teg_name')
 
     class Meta:

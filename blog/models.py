@@ -16,6 +16,7 @@ class Post(models.Model):
     tags = models.ManyToManyField(
                                     'Teg',
                                     related_name = 'posts', #access to records , instead Post_set 
+                                    null = True ,
                                     )
 
     class Meta:
@@ -28,7 +29,7 @@ class Post(models.Model):
 
 class Teg(models.Model):
     name = models.CharField(max_length= 40,db_index = True ,
-                            verbose_name = 'tags name')
+                            verbose_name = 'teg_name')
 
     class Meta:
         verbose_name_plural = 'tegs'

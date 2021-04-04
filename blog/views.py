@@ -7,11 +7,12 @@ from .models import Post,Teg
 
 def index(request):
     posts = Post.objects.all()          
-    context = {'posts':posts}
+    tegs = Teg.objects.all()
+    context = {'posts':posts,'tegs':tegs}
     return render(request, 'blog/main.html',context)
 
 
-def teg_post_view(requst,teg_name):
+def by_teg(requst,teg_name):
     teg = Teg.objects.get(name = teg_name)
     allposts = teg.posts.all() 
     return render(requst, 'blog/main.html',{'posts':allposts})

@@ -10,13 +10,15 @@ class AdvUser(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length = 50,verbose_name='sobject')
+    title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
-    tegs = models.ManyToManyField(
-                                    'Teg',
-                                    related_name = 'posts', #access to records , instead Post_set 
-                                    )
+    tegs = models.ManyToManyField('Teg')
+
+
+    default_related_name = 'posts' 
+    unique_together = ('title','content')
+    
 
     class Meta:
         verbose_name_plural = 'Posts'
@@ -25,6 +27,8 @@ class Post(models.Model):
         
     def __str__(self):
         return self.title
+
+
 
 class Teg(models.Model):
     name = models.CharField(max_length= 40,unique=True,

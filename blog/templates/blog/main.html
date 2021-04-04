@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
-		<head>
-				<meta charset="UTF-8">
-				<title>main page </title>
-		</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>main page </title>
+	</head>
 	<body>
 		<h1>Post</h1>
 		{% for bb in posts %}
 		<div>
 			<h2>{{ bb.title }}</h2>
 			<p>{{ bb.content }}</p>
+			{% for teg in bb.tegs.all %} 
+			<p><a href="{% url 'by_teg' teg.name %}"> {{ teg.name }} <a/></p> 
+			{% endfor %} 
 			<p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
 		</div>
 		{% endfor %}

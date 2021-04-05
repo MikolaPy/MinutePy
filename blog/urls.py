@@ -5,5 +5,5 @@ from .views import *
 urlpatterns = [
     path('create/',PostCreateView.as_view(),name='create'),
     path('',index,name='main'),
-    path('<str:teg_name>/',by_teg,name='by_teg'),
+    path('<str:teg_name>/',PostByTegView.as_view(),name='by_teg'),
     ]

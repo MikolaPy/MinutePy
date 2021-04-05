@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
+
 from .models import *
 from .forms import PostForm
-from django.urls import reverse_lazy
 
 
 def index(request):
@@ -21,6 +24,11 @@ class PostByTegView(TemplateView):
         context['posts'] = Post.objects.filter(
             tegs__name=context["teg_name"])
         return context
+
+
+class PostDetailView(DetailView):
+    model = Post
+
 
 
 class PostCreateView(CreateView):

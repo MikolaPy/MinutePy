@@ -15,16 +15,12 @@ class Post(models.Model):
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
     tegs = models.ManyToManyField('Teg')
 
-
-    default_related_name = 'posts' 
-    unique_together = ('title','content')
-    
-
     class Meta:
+        unique_together = ('title','content')
+        default_related_name = 'posts' 
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']
-        
     def __str__(self):
         return self.title
 

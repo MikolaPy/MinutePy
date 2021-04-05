@@ -16,8 +16,8 @@ class Post(models.Model):
     tegs = models.ManyToManyField('Teg')
 
     class Meta:
-        unique_together = ('title','content')
-        default_related_name = 'posts' 
+        unique_together = ('title','content')   #unique title + contetn
+        default_related_name = 'posts'          #include post_set
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']

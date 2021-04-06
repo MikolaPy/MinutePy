@@ -11,4 +11,12 @@
 				{% endfor %}
 	</div>
 	{% endfor %}
+	{% if page_obj.has_previous %}	
+	<a href="?page={{ page_obj.previous_page_number }}"> previous page </a>
+	{% endif %} 
+	<h2>{{ page_obj.number }} </h2>
+	{% if page_obj.has_next %} 
+	<a href="?page={{ page_obj.next_page_number }}"> next page </a>
+	{% endif %} 
+	
 {% endblock %}

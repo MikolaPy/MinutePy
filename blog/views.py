@@ -17,12 +17,9 @@ def index(request):
 """
 
 class AllPostView(ListView):
+    paginate_by = 4
+    context_object_name = 'posts'
     model = Post    #all posts in object_list attr , template post_list.html
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tegs'] = Teg.objects.all()
-        context['posts'] = context['object_list']
-        return context
 
 
 class PostByTegView(ListView):

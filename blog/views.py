@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from django.views.generic.edit import CreateView,UpdateView
+from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
@@ -39,16 +39,18 @@ class PostByTegView(ListView):
 class PostDetailView(DetailView):
     model = Post
 
-
 class PostCreateView(CreateView):
     template_name = 'blog/post_create.html'
     form_class = PostForm
     success_url = reverse_lazy('main')
 
-class PostEdit(UpdateView):
+class PostEditView(UpdateView):
     teplate_name = 'blog/post_edit.html'
     model = Post
     form_class = PostForm
     success_url = reverse_lazy('main')
 
-
+class PostDeleteView(DeleteView):
+    model= Post
+    template_name_suffix = "_delete" 
+    success_url = '/'

@@ -1,6 +1,6 @@
 {% extends "layout/basic.html" %} 
 {% block content %} 
-<h2>{{ teg.name }}</h2>
+<h2>{{ teg_name }}</h2>
 	{% for post in posts %}
 	<div>
 				<h2><a href="{% url "postdetail" pk=post.pk %}">{{ post.title }}</a></h2>

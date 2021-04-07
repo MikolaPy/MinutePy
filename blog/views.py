@@ -30,10 +30,6 @@ class PostByTegView(ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['teg_name']=self.kwargs['teg_name']
-
-        print('%%'*10)
-        print(context['teg_name'])
-
         return context
 
 
@@ -43,7 +39,9 @@ class PostDetailView(DetailView):
 class PostCreateView(CreateView):
     template_name = 'blog/post_create.html'
     form_class = PostForm
-    success_url = reverse_lazy('main')
+    def get_success_url(self):
+        obj = self.object.pk
+        return reverse_lazy('postdetail',kwargs = {"pk":obj})
 
 class PostEditView(UpdateView):
     teplate_name = 'blog/post_edit.html'

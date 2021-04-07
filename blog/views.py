@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from django.forms import modelformset_factory
 from .models import *
 from .forms import PostForm
 
@@ -54,4 +55,17 @@ class PostEditView(UpdateView):
 class PostDeleteView(DeleteView):
     model= Post
     template_name_suffix = "_delete" 
-    success_url = '/'
+    success_url = reverse_lazy('main')
+
+def tegs_edit(request):
+    TegsFormSet = modelformset_factory(Teg,fields=('name',),
+                                       can_delete=True)
+    if request.method == 'POST':
+        formset = TegsFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('main')
+    else:
+        formset = TegsFormSet()
+    context = {'formset':formset}
+    return render(request,'blog/tegs_edit.html',context)

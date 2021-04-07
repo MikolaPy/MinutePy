@@ -30,6 +30,10 @@ class PostByTegView(ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['teg_name']=self.kwargs['teg_name']
+
+        print('%%'*10)
+        print(context['teg_name'])
+
         return context
 
 

@@ -47,7 +47,9 @@ class PostEditView(UpdateView):
     teplate_name = 'blog/post_edit.html'
     model = Post
     form_class = PostForm
-    success_url = reverse_lazy('main')
+    def get_success_url(self):
+        obj = self.object.pk
+        return reverse_lazy('postdetail',kwargs = {"pk":obj})
 
 class PostDeleteView(DeleteView):
     model= Post

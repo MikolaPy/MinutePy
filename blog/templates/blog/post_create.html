@@ -4,7 +4,24 @@
 <h2>add post</h2>
 <form method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="save">
+	{% if form.non_field_errors %} 
+	<ul>
+			{% for error in form.non_field_errors %} 
+			{{ error }} 
+			{% endfor %} 
+	</ul>
+	{% endif %} 
+	{% for field in form %} 
+			{% if error in fielf.errors %} 
+			<ul>
+					{% for error in fielf.error %} 	
+					<li><em> {{ error|escape }} </em></li>
+					{% endfor %} 
+			</ul>
+			{% endif %} 
+			<p> {{ field.label_tag }} <br> {{ field }} <br>
+			{{ field.help_text }} </p>
+	{% endfor %} 
+	<p><input type="submit" value="save"></p>
 </form>
 {% endblock %}

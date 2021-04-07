@@ -1,0 +1,14 @@
+{% extends "layout/basic.html" %} 
+{% block content %} 
+<h2> enter </h2>
+{% if user.is_authenticated %} 
+<p> allready login </p>
+{% else %} 
+<form method="post" >
+		{% csrf_token %} 
+		{{ form.as_p }} 
+		<input type="hidden" name="next" value="{{ next }}">
+		<input type="submit" value="enter">
+</form>
+		{% endif %} 
+		{% endblock %} 

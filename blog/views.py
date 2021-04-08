@@ -9,6 +9,9 @@ from django.forms import modelformset_factory
 from .models import *
 from .forms import PostForm
 
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 """
 def index(request):
     posts = Post.objects.all()
@@ -24,6 +27,7 @@ class AllPostView(ListView):
 
 
 class PostByTegView(ListView):
+    paginaty_by = 4
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
     def get_queryset(self):
@@ -37,14 +41,14 @@ class PostByTegView(ListView):
 class PostDetailView(DetailView):
     model = Post
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin,CreateView):
     template_name = 'blog/post_create.html'
     form_class = PostForm
     def get_success_url(self):
         obj = self.object.pk
         return reverse_lazy('postdetail',kwargs = {"pk":obj})
 
-class PostEditView(UpdateView):
+class PostEditView(LoginRequiredMixin,UpdateView):
     teplate_name = 'blog/post_edit.html'
     model = Post
     form_class = PostForm
@@ -52,11 +56,12 @@ class PostEditView(UpdateView):
         obj = self.object.pk
         return reverse_lazy('postdetail',kwargs = {"pk":obj})
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin,DeleteView):
     model= Post
     template_name_suffix = "_delete" 
     success_url = reverse_lazy('main')
 
+@user_passes_test(lambda user : user.is_superuser)
 def tegs_edit(request):
     TegsFormSet = modelformset_factory(Teg,fields=('name',),
                                        can_delete=True)

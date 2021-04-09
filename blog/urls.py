@@ -3,7 +3,9 @@ from django.contrib.auth.views import LoginView,LogoutView
 from .views import *
 
 urlpatterns = [
+    path('api/post/<int:pk>/',api_post_detail),
     path('api/tegs/',api_tegs),
+    
     path('accounts/login/',LoginView.as_view(),name='login'),
     path('accounts/logout/',LogoutView.as_view(),name='logout'),
 

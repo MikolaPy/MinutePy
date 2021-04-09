@@ -16,7 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 
 
-from .serializers import TegsSerializer
+from .serializers import *
 #for display 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -28,6 +28,12 @@ def api_tegs(request):
         serializer = TegsSerializer(tegs,many=True)
         return Response(serializer.data)
 
+@api_view(['GET'])
+def api_post_detail(request,pk):
+    if request.method == 'GET':
+        post = Post.objects.get(pk=pk)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
 
 class AllPostView(ListView):
     paginate_by = 4

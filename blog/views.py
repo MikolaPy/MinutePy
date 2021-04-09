@@ -14,6 +14,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.core.paginator import Paginator
 
+from django.http import JsonResponse
+from .serializers import TegsSerializer
+
+
+def api_tegs(request):
+    if request.method == 'GET':
+        tegs = Teg.objects.all()
+        serializer = TegsSerializer(tegs,many=True)
+        return JsonResponse(serializer.data , safe=False)
+
 """
 def index(request):
     posts = Post.objects.all()

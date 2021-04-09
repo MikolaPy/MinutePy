@@ -12,25 +12,22 @@ from .forms import PostForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+
 from django.core.paginator import Paginator
 
-from django.http import JsonResponse
+
 from .serializers import TegsSerializer
+#for display 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-
+@api_view(['GET'])
 def api_tegs(request):
     if request.method == 'GET':
         tegs = Teg.objects.all()
         serializer = TegsSerializer(tegs,many=True)
-        return JsonResponse(serializer.data , safe=False)
+        return Response(serializer.data)
 
-"""
-def index(request):
-    posts = Post.objects.all()
-    tegs = Teg.objects.all()
-    context = {'posts':posts,'tegs':tegs}
-    return render(request, 'blog/main.html',context)
-"""
 
 class AllPostView(ListView):
     paginate_by = 4

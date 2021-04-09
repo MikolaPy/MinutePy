@@ -1,17 +1,10 @@
 {% extends "layout/basic.html" %}
 {% block title %}create post{% endblock %}
 {% block content %}
-<h2>add post</h2>
+<h2>Create post</h2>
 <form method="post">
 	{% csrf_token %}
-	{% if form.non_field_errors %} 
-	<ul>
-			{% for error in form.non_field_errors %} 
-			{{ error }} 
-			{% endfor %} 
-	</ul>
-	{% endif %} 
-	{% bootstrap_form form %} 
-	{% buttons submit="create" %}{% endbuttons %} 
+	{{ form.as_ul }}
+	<input type="submit" value="edit">
 </form>
 {% endblock %}

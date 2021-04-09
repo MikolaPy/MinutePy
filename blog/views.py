@@ -12,6 +12,8 @@ from .forms import PostForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.core.paginator import Paginator
+
 """
 def index(request):
     posts = Post.objects.all()
@@ -27,11 +29,12 @@ class AllPostView(ListView):
 
 
 class PostByTegView(ListView):
-    paginaty_by = 4
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
+    paginate_by = 4
     def get_queryset(self):
-        return Post.objects.filter(tegs__name=self.kwargs['teg_name'])
+        self.post_by_teg = Post.objects.filter(tegs__name=self.kwargs['teg_name'])
+        return self.post_by_teg
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['teg_name']=self.kwargs['teg_name']

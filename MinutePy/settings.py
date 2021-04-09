@@ -8,6 +8,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'bootstrap4',
     'blog.apps.BlogConfig',  #main apps 
     'django.contrib.admin',     #admin apps 
     'django.contrib.auth',      #access rights

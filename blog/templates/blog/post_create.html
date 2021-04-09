@@ -11,17 +11,7 @@
 			{% endfor %} 
 	</ul>
 	{% endif %} 
-	{% for field in form %} 
-			{% if error in fielf.errors %} 
-			<ul>
-					{% for error in fielf.error %} 	
-					<li><em> {{ error|escape }} </em></li>
-					{% endfor %} 
-			</ul>
-			{% endif %} 
-			<p> {{ field.label_tag }} <br> {{ field }} <br>
-			{{ field.help_text }} </p>
-	{% endfor %} 
-	<p><input type="submit" value="save"></p>
+	{% bootstrap_form form %} 
+	{% buttons submit="create" %}{% endbuttons %} 
 </form>
 {% endblock %}

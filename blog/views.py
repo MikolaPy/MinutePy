@@ -10,12 +10,14 @@ from django.forms import modelformset_factory
 from .models import *
 from .forms import PostForm
 
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 
 ####################################################################
 ##
+
+
 ## API REST
 from .serializers import *
 #for display 
@@ -44,11 +46,13 @@ def api_post_detail(request,pk):
 class BBLoginView(LoginView):
     template_name = 'registration/login.html'
 
+@login_required
+def profile(request):
+    return render(request,'registration/profile.html')
 
 
 
-
-
+#######################################################################
 
 
 class AllPostView(ListView):

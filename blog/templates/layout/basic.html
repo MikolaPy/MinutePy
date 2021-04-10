@@ -14,7 +14,8 @@
 		</head>
 		<body class="container-fluid">
 				<header class="mb-4">
-						<hl class="display-4 ">MinutePy</h1> </header>
+					<a class="display-4" href="{% url 'main' %}">MinutePy</a>
+				</header>
 				<div class="row">
 						<ul class="col nav justify-content-end border">
 								{% if not user.is_authenticated %} 
@@ -28,16 +29,16 @@
 										href="#" role="button" aria-haspopup="true"
 										aria-expanded="false">Profile</а>
 										<div class="dropdown-menu">
-												<a class="dropdown-item" href="#">My
-												Posts</а>
-												<a class="dropdown-item" href="#">Edit
+											<a class="dropdown-item" href="{% url 'profile' %}">
+												my posts</а>
+											<a class="dropdown-item" href="#">Edit
 												profile</а>
-												<a class="dropdown-item" href="#">Change
+											<a class="dropdown-item" href="#">Change
 												password</a>
-												<div class="dropdown-divider"></div>
-												<a class="dropdown-item" href="#">logout</a>
-												<div class="dropdown-divider"></div>
-												<a class="dropdown-item" href="#">delete</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="#">logout</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="#">delete</a>
 										</div>
 								</li>
 								{% endif %} 

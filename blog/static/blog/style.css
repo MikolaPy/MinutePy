@@ -1,13 +1,6 @@
 header h1 {
-	font-size: 40pt;
-	text-transform: uppercase;
-	text-align: center;
+	background: url("bg.jpg") rigth / auto 100% no-repeat;
 }
-nav a {
-	display: block;
-	margin: 10px 0px;
+.root {
+	font-size: larger;
 }
-section {
-	margin-left: 170px;
-}
-

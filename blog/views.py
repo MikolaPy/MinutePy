@@ -46,6 +46,7 @@ def api_post_detail(request,pk):
 class BBLoginView(LoginView):
     template_name = 'registration/login.html'
 
+
 @login_required
 def profile(request):
     return render(request,'registration/profile.html')

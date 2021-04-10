@@ -1,14 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.contrib.messages.views import SuccessMessageMixin
 
 from django.forms import modelformset_factory
 from .models import *
-from .forms import PostForm
+from .forms import *
 
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -51,6 +52,21 @@ class BBLoginView(LoginView):
 def profile(request):
     return render(request,'registration/profile.html')
 
+
+class EditUserView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+    model = AdvUser
+    template_name = 'registration/edit_user.html'
+    form_class = UserForm
+    success_url = reverse_lazy('profile')
+    success_message = 'Change edit'
+    
+    def setup(self,request,*args,**kargs): # easy way get user
+        self.user_id = request.user.pk
+        return super().setup(request,*args,**kargs)
+    def get_object(self,queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset,pk=self.user_id)
 
 
 #######################################################################

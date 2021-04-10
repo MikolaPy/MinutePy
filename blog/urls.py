@@ -9,6 +9,7 @@ urlpatterns = [
     path('accounts/login/',BBLoginView.as_view(),name='login'),
     path('accounts/logout/',LogoutView.as_view(),name='logout'),
     path('accounts/profile/',profile,name='profile'),
+    path('accounts/profile/edit/',EditUserView.as_view(),name='edit_user'),
 
     path('post/create/',PostCreateView.as_view(),name='postcreate'),
     path('',AllPostView.as_view(),name='main'),

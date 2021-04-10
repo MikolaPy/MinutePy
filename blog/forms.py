@@ -18,3 +18,13 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ('title','content','tegs')
 
+
+
+class UserForm(forms.ModelForm):
+    email = forms.EmailField(required=True,
+                             label='email address')
+
+    class Meta:
+        model = AdvUser
+        fields = ('username','email','first_name','last_name','send_message')
+

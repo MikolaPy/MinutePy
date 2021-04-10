@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# auth_model_user in setting for access seting
+# auth_model_user in setting for access setting
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True,db_index=True)
     send_message = models.BooleanField(default=True,verbose_name="comment message")

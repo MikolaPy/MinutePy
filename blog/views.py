@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator
 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.detail import DetailView
@@ -11,11 +12,11 @@ from .forms import PostForm
 
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 
-
-from django.core.paginator import Paginator
-
-
+####################################################################
+##
+## API REST
 from .serializers import *
 #for display 
 from rest_framework.response import Response
@@ -34,6 +35,21 @@ def api_post_detail(request,pk):
         post = Post.objects.get(pk=pk)
         serializer = PostSerializer(post)
         return Response(serializer.data)
+
+
+######################################################################
+# AUTH
+
+
+class BBLoginView(LoginView):
+    template_name = 'registration/login.html'
+
+
+
+
+
+
+
 
 class AllPostView(ListView):
     paginate_by = 4

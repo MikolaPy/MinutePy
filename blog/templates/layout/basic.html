@@ -1,33 +1,68 @@
+{% load bootstrap4 %} 
 {% load static %} 
-
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>{% block title %}Main page{% endblock %}</title>
-		<link rel="stylesheet" type="text/css"
-		href="{% static 'blog/style.css' %}"> 
-	</head>
-	<body>
-		<header>
-			<h1>PyBlog</h1>
-		</header>
-		<nav>
-			<a href="{% url "main" %}">main</a>
-		{% if not user.is_authenticated %} 
-			<a href="{% url "login" %}">login</a>
-		{% else %} 
-			<a href="{% url "logout" %}">logout</a>
-			<a href="{% url "postcreate" %}"> add post </a>
-		{% endif %} 
-		{% if user.is_superuser %} 
-			<a href="{% url "tegs_edit" %}">edit all tegs </a>
-		{% endif %} 
-		</nav>
-		<section>
-		{% block content %}
-		{% endblock %}
-		</section>
-	</body>
+		<head>
+				<meta charset="UTF-8">
+				<meta name="viewport"
+				content="width=device-width, initial-scale=l, shrink-to-fit=no">
+				<title>{% block title %}Main{% endblock %} - MinutePy blog</title>
+						{% bootstrap_css %}
+						<link rel="stylesheet" type="text/css"
+						href="{% static "blog/style.css" %}">
+						{% bootstrap_javascript jquery='slim' %}
+		</head>
+		<body class="container-fluid">
+				<header class="mb-4">
+						<hl class="display-4 ">MinutePy</h1> </header>
+				<div class="row">
+						<ul class="col nav justify-content-end border">
+								{% if not user.is_authenticated %} 
+								<li class="nav-item"><a class="nav-link"
+								href="#">registraition</a></li>
+								href="{% url "login" %}">login</a></li>
+								{% else %}	
+								<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle"
+										data-toggle="dropdown"
+										href="#" role="button" aria-haspopup="true"
+										aria-expanded="false">Profile</а>
+										<div class="dropdown-menu">
+												<a class="dropdown-item" href="#">My
+												Posts</а>
+												<a class="dropdown-item" href="#">Edit
+												profile</а>
+												<a class="dropdown-item" href="#">Change
+												password</a>
+												<div class="dropdown-divider"></div>
+												<a class="dropdown-item" href="#">logout</a>
+												<div class="dropdown-divider"></div>
+												<a class="dropdown-item" href="#">delete</a>
+										</div>
+								</li>
+								{% endif %} 
+						</ul>
+				</div>
+				<div class="row">
+						<nav class="col-md-auto nav flex-column border">
+								<span class="nav-link root font-weight-bold">
+								Heдвижимость </span>
+								<a class="nav-link" href="#">Kwibe</a>
+								<a class="nav-link" Ьге1="#">Склады</a>
+								<a class="nav-link" Нге1="#">Гаражи</a>
+								<span class="nav-link root font-weight-bold" href="#">
+												  Транспорт</span>
+								<a class="nav-link" href="#">easy</a>
+								<a class="nav-link" href="#">breazy:ft</a>
+						</nav>
+						<section class="col border py-2">
+								{% bootstrap_messages %}
+								{% block content %}
+								{% endblock %}
+						</section>
+				</div>
+				<footer class="mt-3">
+						<p class="text-center font-italic">&copy; dont play </p>
+				</footer>
+		</body>
 </html>
-

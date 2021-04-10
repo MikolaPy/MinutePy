@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
-" for register and setting display fields model need change options in blog/admin.py "
-
-class AdvUser(models.Model):
-    is_activated = models.BooleanField(default=True)
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+# auth_model_user in setting for access seting
+class AdvUser(AbstractUser):
+    is_activated = models.BooleanField(default=True,db_index=True)
+    send_message = models.BooleanField(default=True,verbose_name="comment message")
+    class Meta(AbstractUser.Meta):
+        pass
 
 
 

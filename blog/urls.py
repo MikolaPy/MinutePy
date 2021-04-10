@@ -6,7 +6,7 @@ urlpatterns = [
     path('api/post/<int:pk>/',api_post_detail),
     path('api/tegs/',api_tegs),
     
-    path('accounts/login/',LoginView.as_view(),name='login'),
+    path('accounts/login/',BBLoginView.as_view(),name='login'),
     path('accounts/logout/',LogoutView.as_view(),name='logout'),
 
     path('post/create/',PostCreateView.as_view(),name='postcreate'),

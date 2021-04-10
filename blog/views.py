@@ -13,7 +13,7 @@ from .forms import *
 
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 
 ####################################################################
 ##
@@ -52,6 +52,10 @@ class BBLoginView(LoginView):
 def profile(request):
     return render(request,'registration/profile.html')
 
+class BBPasswordChangeView(SuccessMessageMixin,LoginRequiredMixin,PasswordChangeView):
+    template_name = 'registration/password_change.html'
+    success_url = reverse_lazy('main')
+    success_message = 'Success done ! Password change'
 
 class EditUserView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     model = AdvUser

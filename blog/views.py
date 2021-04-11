@@ -11,9 +11,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 from django.forms import modelformset_factory
 
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.contrib import messages
+
 
 from .models import *
 from .forms import *
@@ -44,23 +47,25 @@ def api_post_detail(request,pk):
         return Response(serializer.data)
 
 
-######################################################################
+###########################################################################################
 # AUTH
+############################################################################################
 
-
+# Login page
 class BBLoginView(LoginView):
     template_name = 'registration/login.html'
-
-
+# Profile page
 @login_required
 def profile(request):
     return render(request,'registration/profile.html')
 
+# Change password page
 class BBPasswordChangeView(SuccessMessageMixin,LoginRequiredMixin,PasswordChangeView):
     template_name = 'registration/password_change.html'
     success_url = reverse_lazy('main')
     success_message = 'Success done ! Password change'
 
+# Edit profile page 
 class EditUserView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     model = AdvUser
     template_name = 'registration/edit_user.html'
@@ -104,6 +109,22 @@ def user_activate(request,sign):
         user.save()
     return render(request,template)
 
+
+class DeleteUserView(LoginRequiredMixin,DeleteView):
+    model = AdvUser
+    template_name = 'registration/delete_user.html'
+    success_url = reverse_lazy('main')
+
+    def setup(self,request,*args,**kargs):
+        self.user_id = request.user.pk
+        return super().setup(request,*args,**kargs)
+    def post(self,request,*args,**kargs):
+        messages.add_message(request,messages.SUCCESS,'user delete')
+        return super().post(request,*args,**kargs)
+    def get_object(self,queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset,pk=self.user_id)
 
 
 #######################################################################

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from .models import *
 
-
+from .apps import user_registered
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(label='Subject')
@@ -64,7 +64,7 @@ class RegisterUserForm(forms.ModelForm):
         user.is_activated = False
         if commit:
             user.save()
-        user_register.send(RegisterUserForm,instance=user)      #sending sign
+        user_registered.send(RegisterUserForm,instance=user)      #sending sign
         return user                             #to send user an email requistion activation
     class Meta:
         model = AdvUser

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from .models import *
 
-from .apps import user_registered
+from .apps import user_registered_signal
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(label='Subject')
@@ -37,7 +37,7 @@ class RegisterUserForm(forms.ModelForm):
     password1 = forms.CharField(label="first password",
                                 widget=forms.PasswordInput,
                                 #all password requirements 
-                               help_text=password_validation.password_validators_help_text_html())  
+                               help_text=password_validation.password_validators_help_text_html())
     password2 = forms.CharField(label="second passwor",
                                      widget=forms.PasswordInput,
                                      help_text="input password again")
@@ -49,7 +49,7 @@ class RegisterUserForm(forms.ModelForm):
             password_validation.validate_password(password)
         return password
 
-    def clean(self):        
+    def clean(self):
         super().clean()
         password1 = self.cleaned_data['password1']
         password2 = self.cleaned_data['password2']
@@ -64,7 +64,7 @@ class RegisterUserForm(forms.ModelForm):
         user.is_activated = False
         if commit:
             user.save()
-        user_registered.send(RegisterUserForm,instance=user)      #sending sign
+        user_registered_signal.send(RegisterUserForm,instance=user)      #sending sign
         return user                             #to send user an email requistion activation
     class Meta:
         model = AdvUser

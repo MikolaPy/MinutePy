@@ -11,6 +11,9 @@ urlpatterns = [
     path('accounts/profile/',profile,name='profile'),
     path('accounts/profile/edit/',EditUserView.as_view(),name='edit_user'),
     path('accounts/password/change/',BBPasswordChangeView.as_view(),name='password_change'),
+    path('accounts/register/',RegisterUserView.as_view(),name='register'),
+    path('accounts/register/done/',RegisterDoneView.as_view(),name='register_done'),
+    path('accounts/register/activate/<str:sign>/',user_activate,name='register_activate'),
 
     path('post/create/',PostCreateView.as_view(),name='postcreate'),
     path('',AllPostView.as_view(),name='main'),

@@ -1,19 +1,23 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
+from django.core.signing import  BadSignature
 
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.forms import modelformset_factory
-from .models import *
-from .forms import *
 
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+
+from .models import *
+from .forms import *
+from .utilities import signer
 
 ####################################################################
 ##
@@ -71,6 +75,35 @@ class EditUserView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
         if not queryset:
             queryset = self.get_queryset()
         return get_object_or_404(queryset,pk=self.user_id)
+
+
+class RegisterUserView(CreateView):
+    model = AdvUser
+    template_name = 'registration/register.html'
+    form_class = RegisterUserForm
+    success_url = reverse_lazy('register_done')
+
+class RegisterDoneView(TemplateView):
+    template_name = 'registration/register_done.html'
+
+def user_activate(request,sign):
+    #get the identifier with the sign URl parameter
+    #next extract the username and display a page 
+    #with message about successful activation
+    try:
+        username = signer.unsign(sign)
+    except BadSignature:  #if digital sign is bad ,display another page
+        return render(request,'registration/bad_signature.html')
+    user = get_object_or_404(AdvUser,username=username)
+    if user.is_activated:  #elif user allready activated
+        template = 'registration/user_is_activated.html'
+    else:
+        template = 'registration/activation_done.html'
+        user.is_active = True
+        user.is_activated = True
+        user.save()
+    return render(request,template)
+
 
 
 #######################################################################

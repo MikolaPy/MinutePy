@@ -1,0 +1,4 @@
+Hello {{ user.username }}!
+You register in MinutePy 
+activate you profile 
+{{ host }}{% url 'register_activate' sign=sign %}

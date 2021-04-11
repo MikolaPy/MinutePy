@@ -117,3 +117,5 @@ MEDIA_URL = '/media/'
 
 
 AUTH_USER_MODEL = 'blog.AdvUser'
+
+EMAIL_PORT = 1025

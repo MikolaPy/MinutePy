@@ -116,9 +116,14 @@ class DeleteUserView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('main')
 
     def setup(self,request,*args,**kargs):
+        #save id user from requst
         self.user_id = request.user.pk
         return super().setup(request,*args,**kargs)
+
     def post(self,request,*args,**kargs):
+        #logout from site profile via built-in function
+        logout(request)
+        #message successful delete user
         messages.add_message(request,messages.SUCCESS,'user delete')
         return super().post(request,*args,**kargs)
     def get_object(self,queryset=None):

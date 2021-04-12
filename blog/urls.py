@@ -18,7 +18,7 @@ urlpatterns = [
 
     path('post/create/',PostCreateView.as_view(),name='postcreate'),
     path('',AllPostView.as_view(),name='main'),
-    path('tegs/<str:teg_name>/',PostByTegView.as_view(),name='by_teg'),
+    path('tegs/<str:teg_name>/',PostByMarkerView.as_view(),name='by_teg'),
 
     path('post/<int:pk>/delete/',PostDeleteView.as_view(),name='postdelete'),
     path('post/<int:pk>/edit/',PostEditView.as_view(),name='postedit'),

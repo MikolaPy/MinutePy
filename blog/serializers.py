@@ -3,7 +3,7 @@ from .models import *
 
 class TegsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Teg
+        model = Marker
         fields = ('name',)
         
 

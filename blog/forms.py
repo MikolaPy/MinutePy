@@ -8,7 +8,6 @@ from .apps import user_registered_signal
 class PostForm(forms.ModelForm):
     title = forms.CharField(label='Subject')
     content = forms.CharField(label='bodypost',widget=forms.widgets.Textarea(),required=False)
-    tegs = forms.ModelMultipleChoiceField(queryset=Teg.objects.all(),label='teg',widget=forms.widgets.CheckboxSelectMultiple(attrs={'size':10}))
     def clean(self):
         super().clean()
         errors = {}
@@ -19,8 +18,23 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ('title','content','tegs')
+        fields = ('title','content','marker')
 
+
+class MarkerForm(forms.ModelForm):
+    #make field required
+    main_section = forms.ModelChoiceField(queryset=MainSection.objects.all(),
+                                          empty_label=None, #cant chose empty
+                                          label='main section',
+                                          required=True)
+    class Meta:
+        model = Marker
+        fields = '__all__'
+###########################################################################################
+#
+#      AUth Forms
+#
+###########################################################################################
 
 
 class UserForm(forms.ModelForm):

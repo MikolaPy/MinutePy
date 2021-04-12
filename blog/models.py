@@ -9,7 +9,6 @@ class AdvUser(AbstractUser):
         pass
 
 
-
 class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
@@ -18,12 +17,13 @@ class Post(models.Model):
 
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
-        default_related_name = 'posts'          #include post_set
+        default_related_name = 'posts'          #include post_set in Manager
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']
     def __str__(self):
         return self.title
+
 
 
 class Section(models.Model):
@@ -40,22 +40,20 @@ class MarkerManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(main_section__isnull=False)
 
-class Marker(models.Model):
+class Marker(Section):
     objects = MarkerManager
-
     class Meta:
         proxy = True
         ordering = ('main_section__order','main_section__name','order','name')
-        verbose_name = 'teg'
-        verbose_name_plural = 'tegs'
+        verbose_name = 'marler'
+        verbose_name_plural = 'markers'
 
 
 class MainSectionManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(main_section__isnull=True) 
 
-
-class MainSecton(Teg):
+class MainSection(Section):
     objects = MainSectionManager() #new manager
     class Meta:
         proxy = True

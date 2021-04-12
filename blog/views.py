@@ -35,8 +35,8 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def api_tegs(request):
     if request.method == 'GET':
-        tegs = Teg.objects.all()
-        serializer = TegsSerializer(tegs,many=True)
+        tegs = Marker.objects.all()
+        serializer = MarkersSerializer(tegs,many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
@@ -141,7 +141,7 @@ class AllPostView(ListView):
     model = Post    #all posts in object_list attr , template post_list.html
 
 
-class PostByTegView(ListView):
+class PostByMarkerView(ListView):
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
     paginate_by = 4
@@ -179,14 +179,14 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):
 
 @user_passes_test(lambda user : user.is_superuser)
 def tegs_edit(request):
-    TegsFormSet = modelformset_factory(Teg,fields=('name',),
+    MarkersFormSet = modelformset_factory(Marker,fields=('name',),
                                        can_delete=True)
     if request.method == 'POST':
-        formset = TegsFormSet(request.POST)
+        formset = MarkersFormSet(request.POST)
         if formset.is_valid():
             formset.save()
             return redirect('main')
     else:
-        formset = TegsFormSet()
+        formset = MarkersFormSet()
     context = {'formset':formset}
     return render(request,'blog/tegs_edit.html',context)

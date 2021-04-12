@@ -22,6 +22,23 @@ INSTALLED_APPS = [
     "easy_thumbnails",          #creates thumbmails
 ]
 
+############################################################################################
+#  settitng thumbmails
+
+THUMBNAIL_ALIASES = {
+        '': {
+            'default': {
+                'size': (96, 96),
+                'crop': 'scale',
+        },
+    },
+}
+
+
+THUMBNAIL_BASEDIR = 'thumbnails'
+#############################################################################################
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

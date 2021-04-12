@@ -1,3 +1,4 @@
+from .utilities import *
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -14,6 +15,17 @@ class Post(models.Model):
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
     markers = models.ManyToManyField('Marker')
+    image = models.ImageField(blank=True,upload_to=create_filename,
+                               verbose_name='images')
+    author = models.ForeignKey(AdvUser,on_delete=models.CASCADE,
+                               verbose_name='post author')
+
+    def delete(self,*args,**kargs):
+        #when post delete we delete related record in investmant model from db
+        for im in self.attachments.all():
+            im.delete()
+        super().delete(*args,**kargs)
+
 
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
@@ -23,6 +35,16 @@ class Post(models.Model):
         ordering = ['-published']
     def __str__(self):
         return self.title
+
+
+class Attachment(models.Model):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='attachments')
+    images = models.ImageField(upload_to=create_filename,verbose_name='images')
+
+    class Meta:
+        default_related_name = 'attachments'    #include post_set in Manager
+        verbose_name_plural='attacments'
+        verbose_name = 'attacment'
 
 ###############################################################################################
 #

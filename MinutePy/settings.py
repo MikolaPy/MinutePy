@@ -10,7 +10,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',     #admin apps 
     'django.contrib.auth',      #access rights
-    'blog.apps.BlogConfig',  #main apps 
+    'blog.apps.BlogConfig',     #main apps 
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -18,6 +18,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "bootstrap4",
+    "django_cleanup",           #remove the update fiels after deleting the rec storing them
+    "easy_thumbnails",          #creates thumbmails
 ]
 
 MIDDLEWARE = [

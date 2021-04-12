@@ -14,7 +14,7 @@ class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
-    tegs = models.ManyToManyField('Teg')
+    marker = models.ManyToManyField('Marker')
 
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
@@ -26,14 +26,39 @@ class Post(models.Model):
         return self.title
 
 
-
-class Teg(models.Model):
-    name = models.CharField(max_length= 40,unique=True,
-                            verbose_name = 'teg_name')
-
-    class Meta:
-        verbose_name_plural = 'tegs'
-        verbose_name = 'teg'
-        ordering = ['name']
+class Section(models.Model):
+    name = models.CharField(max_length=20,db_index=True,unique=True,
+                            verbose_name='section name')
+    order = models.IntegerField(default=0,db_index=True,verbose_name='order')
+    main_section = models.ForeignKey('MainSection',on_delete=models.PROTECT,null=True,
+                                     blank=True,verbose_name='main section')
     def __str__(self):
         return self.name
+
+
+class MarkerManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(main_section__isnull=False)
+
+class Marker(models.Model):
+    objects = MarkerManager
+
+    class Meta:
+        proxy = True
+        ordering = ('main_section__order','main_section__name','order','name')
+        verbose_name = 'teg'
+        verbose_name_plural = 'tegs'
+
+
+class MainSectionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(main_section__isnull=True) 
+
+
+class MainSecton(Teg):
+    objects = MainSectionManager() #new manager
+    class Meta:
+        proxy = True
+        ordering = ('order','name')
+        verbose_name = 'MainSection'
+        verbose_name_plural = 'MainSections'

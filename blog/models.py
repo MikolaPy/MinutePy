@@ -13,7 +13,7 @@ class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
-    marker = models.ManyToManyField('Marker')
+    markers = models.ManyToManyField('Marker')
 
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
@@ -48,7 +48,7 @@ class MarkerManager(models.Manager):
         return super().get_queryset().filter(main_section__isnull=False)
 
 class Marker(Section):
-    objects = MarkerManager
+    objects = MarkerManager()
     class Meta:
         proxy = True
         ordering = ('main_section__order','main_section__name','order','name')

@@ -18,7 +18,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ('title','content','marker')
+        fields = ('title','content','markers')
 
 
 class MarkerForm(forms.ModelForm):

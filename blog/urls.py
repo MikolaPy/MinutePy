@@ -16,12 +16,12 @@ urlpatterns = [
     path('accounts/register/activate/<str:sign>/',user_activate,name='register_activate'),
     path('accounts/delete/',DeleteUserView.as_view(),name='delete_user'),
 
-    path('post/create/',PostCreateView.as_view(),name='postcreate'),
     path('',AllPostView.as_view(),name='main'),
-    path('tegs/<str:teg_name>/',PostByMarkerView.as_view(),name='by_teg'),
+    path('marker/<str:marker_name>/',PostByMarkerView.as_view(),name='by_marker'),
+    path('tegs/',tegs_edit,name='tegs_edit'),
 
+    path('post/create/',PostCreateView.as_view(),name='postcreate'),
     path('post/<int:pk>/delete/',PostDeleteView.as_view(),name='postdelete'),
     path('post/<int:pk>/edit/',PostEditView.as_view(),name='postedit'),
     path('post/<int:pk>/',PostDetailView.as_view(),name='postdetail'),
-    path('tegs/',tegs_edit,name='tegs_edit')
     ]

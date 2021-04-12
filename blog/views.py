@@ -24,9 +24,9 @@ from .utilities import signer
 
 ####################################################################
 ##
-
-
 ## API REST
+
+
 from .serializers import *
 #for display 
 from rest_framework.response import Response
@@ -145,12 +145,14 @@ class PostByMarkerView(ListView):
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
     paginate_by = 4
+
     def get_queryset(self):
-        self.post_by_teg = Post.objects.filter(tegs__name=self.kwargs['teg_name'])
-        return self.post_by_teg
+        self.post_by_marker = Post.objects.filter(markers__name=self.kwargs['marker_name'])
+        return self.post_by_marker
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['teg_name']=self.kwargs['teg_name']
+        marker = Marker.objects.get(name=self.kwargs['marker_name'])
+        context['marker_name'] = marker
         return context
 
 

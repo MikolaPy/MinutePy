@@ -83,3 +83,9 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = AdvUser
         fields = ('username','first_name','last_name','password1','password2','email','send_message')
+
+
+
+class SearchForm(forms.Form):
+    key = forms.CharField(required=False,max_length=20,label='')
+

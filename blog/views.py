@@ -153,6 +153,7 @@ class PostByMarkerView(ListView):
         context = super().get_context_data(**kwargs)
         marker = Marker.objects.get(name=self.kwargs['marker_name'])
         context['marker_name'] = marker
+        context['search_form'] =  SearchForm()
         return context
 
 

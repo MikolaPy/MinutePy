@@ -7,7 +7,7 @@
 		<p>{{ post.content }}</p>
 			<p>{{ post.published|date:"d.m.Y H:i:s" }}</p>
 			{% for marker in post.markers.all %} 
-		<p><a href="{% url 'by_marker' teg.name %}">{{ marker.name }}</a></p>
+		<p><a href="{% url 'by_marker' marker.name %}">{{ marker.name }}</a></p>
 			{% endfor %}
 	</div>
 	{% endfor %}

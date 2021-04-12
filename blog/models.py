@@ -9,6 +9,12 @@ class AdvUser(AbstractUser):
     class Meta(AbstractUser.Meta):
         pass
 
+    def delete(self,*args,**kargs):
+    #delete all uset posts 
+        for post in self.posts.all():
+            post.delete()
+        super().delete(*args,**kargs)
+
 
 class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
@@ -39,7 +45,7 @@ class Post(models.Model):
 
 class Attachment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='attachments')
-    images = models.ImageField(upload_to=create_filename,verbose_name='images')
+    image = models.ImageField(upload_to=create_filename,verbose_name='image')
 
     class Meta:
         default_related_name = 'attachments'    #include post_set in Manager

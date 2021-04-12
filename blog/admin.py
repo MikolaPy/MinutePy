@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import *
 from .forms import *
+
+
 class MarkerInline(admin.TabularInline):
 # Built-in editor is similar setform
 # On the page editing a record primary model
@@ -17,7 +19,21 @@ class MainSectionAdmin(admin.ModelAdmin):
     exclude = ('main_section',)
     inlines = (MarkerInline,)
 
+
 @admin.register(Marker)
 class MarkerAdmin(admin.ModelAdmin):
     form = MarkerForm  #this field main_section required 
+
+
+class AttachmentAdmin(admin.TabularInline):
+    model = Attachment
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('title','content','author','published')
+
+    fields =  (('markers','author'),'title','content','image')
+    inlines = (AttachmentAdmin,)
+
 

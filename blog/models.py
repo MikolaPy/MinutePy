@@ -24,8 +24,15 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-
-
+###############################################################################################
+#
+#       SECTIONS
+#   One post may have many markers , marker have one main section.
+#   Admin can create and edit all section on one page in admine site. ?admin.py for detail?
+#   User can create new marker. 
+#   Marker must have main section.
+#
+#*****************************************************************************************
 class Section(models.Model):
     name = models.CharField(max_length=20,db_index=True,unique=True,
                             verbose_name='section name')

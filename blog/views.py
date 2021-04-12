@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
@@ -146,14 +147,25 @@ class PostByMarkerView(ListView):
     context_object_name = 'posts'
     paginate_by = 4
 
+    def setup(self,request,*args,**kargs):
+        self.requist = request
+        return super().setup(request,*args,**kargs)
+
     def get_queryset(self):
-        self.post_by_marker = Post.objects.filter(markers__name=self.kwargs['marker_name'])
-        return self.post_by_marker
+        posts = Post.objects.filter(markers__name=self.kwargs['marker_name'])
+        if 'key' in self.request.GET:
+            self.key = self.request.GET['key']
+            q = Q(title__icontains=self.key)|Q(content__icontains=self.key)
+            posts = posts.filter(q)
+        else:
+            self.key= ''
+        return posts
+
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         marker = Marker.objects.get(name=self.kwargs['marker_name'])
-        context['marker_name'] = marker
-        context['search_form'] =  SearchForm()
+        context['marker'] = marker
+        context['form'] =  SearchForm(initial={'key':self.key})
         return context
 
 

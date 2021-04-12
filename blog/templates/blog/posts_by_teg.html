@@ -1,14 +1,48 @@
-{% extends "layout/basic.html" %} 
-{% block content %} 
-<h2>{{ marker_name }}</h2>
-	{% for post in posts %}
-	<div>
-	<h2><a href="{% url "postdetail" pk=post.pk %}">{{ post.title }}</a></h2>
-		<p>{{ post.content }}</p>
-			<p>{{ post.published|date:"d.m.Y H:i:s" }}</p>
-			{% for marker in post.markers.all %} 
-		<p><a href="{% url 'by_marker' marker.name %}">{{ marker.name }}</a></p>
-			{% endfor %}
-	</div>
-	{% endfor %}
+{% extends "layout/basic.html" %}
+
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+{% block title %} post by {{ marker }}{% endblock %}
+{% block content %}
+<h2 class="mb-2">{{ marker }}</h2>
+<div class="container-fluid mb-2">
+		<div class="row">
+				<div class="col">&nbsp;</div>
+				<form class="col-md-auto form-inline">
+						{% bootstrap_form form show_label=False %}
+						{% bootstrap_button content='search' button_type='submit' %}
+				</form>
+		</div>
+</div>
+{% if posts %}
+<ul class="list-unstyled">
+		{% for post in posts %}
+		<li class="media my-5 p-3 border">
+				{% url 'postdetail'  pk=post.pk as url %}
+				<a href="{{ url }}{{ all }}">
+						{% if post.image %}
+						<img class="mr-3" src="{% thumbnail post.image 'default' %}">
+						{% else %}
+						<img class="mr-3" src="{% static 'main/empty.jpg' %}">
+						{% endif %}
+				</a>
+				<div class="media-body">
+						<h3><a href="{{ url }}{{ all }}">
+										{{ post.title }}</a></h3>
+										<div>{{ post.content }}</div>
+
+				</div>
+		</li>
+		{% endfor %}
+</ul>
+{% endif %}
 {% endblock %}
+
+
+
+
+
+
+
+

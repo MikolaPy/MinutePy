@@ -143,6 +143,8 @@ class AllPostView(ListView):
 
 
 class PostByMarkerView(ListView):
+    # all posts related with select marker and form search 
+    
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
     paginate_by = 4
@@ -169,8 +171,12 @@ class PostByMarkerView(ListView):
         return context
 
 
-class PostDetailView(DetailView):
-    model = Post
+def post_detail(request,pk):
+    post = Post.objects.get(pk=pk) 
+    attachments = post.attachments.all()
+    context = {'post':post,'attachments':attachments}
+    return render(request,'blog/post_detail.html',context)
+
 
 class PostCreateView(LoginRequiredMixin,CreateView):
     template_name = 'blog/post_create.html'

@@ -1,14 +1,35 @@
-{% extends 'layout/basic.html' %} 
-
-{% block title %}{{ post.title }} {% endblock %} 
-
-{% block content %} 
-		<h2>{{ post.title }}</h2> 
-		<p>{{ post.content }}</p>
-		<p>{{ post.published }}</p> 
-		{% for tag in post.tegs.all %} 
-		<h2>{{ tag.name }}</h2> 
-		{% endfor %} 
-		<p><a href="{% url 'postedit' post.pk %}"> edit post</a></p>
-		<p><a href="{% url 'postdelete' post.pk %}"> delete post </a></p>
+{% extends "layout/basic.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<div class="container-fluid mt-3">
+		<div class="row">
+			{% if post.image %}
+				<div class="col-md-auto"ximg src="{{ post.image.url }}"
+				class="main-image"></div>
+			{% endif %}
+					<div class="col">
+						<h2>{{ post.title }}</h2>
+						<p>{{ post.content }}</p>
+					<div class="row">
+						<ul class="col nav justify-content ">
+						{% for marker in post.markers.all %} 
+							<li class="nav-item"><a class="nav-link"
+							href="{% url 'by_marker' marker.name %} "> {{ marker.name }} </a></li>
+						{% endfor %} 
+						</ul>
+					</div>
+							 <p class="text-right font-italic"> 
+							 {{ post.published }}</p>
+					</div>
+		</div>
+</div>
+	{% if attacments %}
+<div class="d-flex justify-content-between flex-wrap mt-5”>
+		{% for att in attachments %}
+		<div>
+				<img class="additional-image" src="{{ att.image.url }}">
+		</div>
+		{% endfor %}
+</div>
+{% endif %}
 {% endblock %}

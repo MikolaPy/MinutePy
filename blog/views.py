@@ -58,7 +58,8 @@ class BBLoginView(LoginView):
 # Profile page
 @login_required
 def profile(request):
-    return render(request,'registration/profile.html')
+    posts = Post.objects.filter(author=request.user.pk)
+    return render(request,'registration/profile.html',{'posts':posts})
 
 # Change password page
 class BBPasswordChangeView(SuccessMessageMixin,LoginRequiredMixin,PasswordChangeView):
@@ -172,42 +173,55 @@ class PostByMarkerView(ListView):
 
 
 def post_detail(request,pk):
-    post = Post.objects.get(pk=pk) 
+    post = Post.objects.get(pk=pk)
     attachments = post.attachments.all()
     context = {'post':post,'attachments':attachments}
     return render(request,'blog/post_detail.html',context)
 
+@login_required
+def post_create(request):
+# So that all attachents found to be releted with the post
+# we first validate and save the post form the ad itself
+# method save returns the saved record , and we pass this 
+# through the instance parameter a formset constructor
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES)
+        if form.is_valid():
+            post = form.save()
+            formset = AttFormSet(request.POST,request.FILES,instance=post)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request,messages.SUCCESS,'post created')
+                return redirect('main')
+    else:
+        form = PostForm(initial={'author':request.user.pk})
+        formset = AttFormSet()
+    context = {'form':form,'formset':formset}
+    return render(request,'blog/post_create.html',context)
 
-class PostCreateView(LoginRequiredMixin,CreateView):
-    template_name = 'blog/post_create.html'
-    form_class = PostForm
-    def get_success_url(self):
-        obj = self.object.pk
-        return reverse_lazy('postdetail',kwargs = {"pk":obj})
 
-class PostEditView(LoginRequiredMixin,UpdateView):
-    teplate_name = 'blog/post_edit.html'
-    model = Post
-    form_class = PostForm
-    def get_success_url(self):
-        obj = self.object.pk
-        return reverse_lazy('postdetail',kwargs = {"pk":obj})
+
+@login_required
+def post_edit(request,pk):
+    post = Post.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES,instance=post)
+        if form.is_valid():
+            post = form.save()
+            formset = AttFormSet(request.POST,request.FILES,instance=post)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request,messages.SUCCESS,'edited post')
+                return redirect('main')
+    else:
+        form = PostForm(instance=post)
+        formset = AttFormSet(instance=post)
+    context = {'form':form,'formset':formset}
+    return render(request,'blog/post_edit.html',context)
+
 
 class PostDeleteView(LoginRequiredMixin,DeleteView):
     model= Post
-    template_name_suffix = "_delete" 
+    template_name_suffix = "_delete"
     success_url = reverse_lazy('main')
 
-@user_passes_test(lambda user : user.is_superuser)
-def tegs_edit(request):
-    MarkersFormSet = modelformset_factory(Marker,fields=('name',),
-                                       can_delete=True)
-    if request.method == 'POST':
-        formset = MarkersFormSet(request.POST)
-        if formset.is_valid():
-            formset.save()
-            return redirect('main')
-    else:
-        formset = MarkersFormSet()
-    context = {'formset':formset}
-    return render(request,'blog/tegs_edit.html',context)

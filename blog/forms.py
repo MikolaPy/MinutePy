@@ -2,23 +2,21 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from .models import *
-
+from django.forms import inlineformset_factory
 from .apps import user_registered_signal
 
-class PostForm(forms.ModelForm):
-    title = forms.CharField(label='Subject')
-    content = forms.CharField(label='bodypost',widget=forms.widgets.Textarea(),required=False)
-    def clean(self):
-        super().clean()
-        errors = {}
-        if not self.cleaned_data['content']:
-            errors['content'] = ValidationError('WTF there data?')
-        if errors:
-            raise ValidationError(errors)
 
+
+class PostForm(forms.ModelForm):
+    # make author fields invisibilite
     class Meta:
         model = Post
-        fields = ('title','content','markers')
+        fields = '__all__'
+        widgets = {'author':forms.HiddenInput}
+
+# create post formset
+AttFormSet = inlineformset_factory(Post,Attachment,fields='__all__')
+
 
 
 class MarkerForm(forms.ModelForm):
@@ -30,6 +28,15 @@ class MarkerForm(forms.ModelForm):
     class Meta:
         model = Marker
         fields = '__all__'
+
+
+
+
+class SearchForm(forms.Form):
+    key = forms.CharField(required=False,max_length=20,label='')
+
+
+
 ###########################################################################################
 #
 #      AUth Forms
@@ -86,6 +93,4 @@ class RegisterUserForm(forms.ModelForm):
 
 
 
-class SearchForm(forms.Form):
-    key = forms.CharField(required=False,max_length=20,label='')
 

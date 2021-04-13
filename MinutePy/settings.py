@@ -75,6 +75,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'MinutePy.wsgi.application'
 
 
@@ -136,7 +137,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
-
+#its change default User model 
 AUTH_USER_MODEL = 'blog.AdvUser'
 
 EMAIL_PORT = 1025

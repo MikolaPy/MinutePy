@@ -1,12 +1,16 @@
 {% extends "layout/basic.html" %}
-{% block title %}{{ post.title }}{% endblock %}
-{% block content %}
-{% load bootstrap4 %}
+
+{% load thumbnail %}
 {% load static %} 
+{% load bootstrap4 %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
 <div class="container-fluid mt-3">
 		<div class="row">
 					{% if post.image %}
-					<div class="col-md-auto"ximg src="{{ post.image.url }}"
+					<div class="col-md-auto"><img src="{{ post.image.url }}"
 					class="main-image"></div>
 					{% endif %}
 					<div class="col">
@@ -29,7 +33,7 @@
 				</div>
 		</div>
 </div>
-{% if attacments %}
+{% if attachments %}
 <div class="d-flex justify-content-between flex-wrap mt-5">
 	{% for att in attachments %}
 	<div>
@@ -38,21 +42,21 @@
 	{% endfor %}
 </div>
 {% endif %}
-<h4 class="mt-5">new comment</h4>
-<form method="post">
-	{% csrf_token %}
-	{% bootstrap_form form layout='horizontal' %}
-	{% buttons submit="add comment" %} {% endbuttons %}
-</form>
-{% if comments %}
-<div class="mt-5">
-	{% for comment in comments %}
-	<div class="my-2 p-2 border">
-		<h5>{{ comment.author }}</h5>
-		<h2> {{ comment.title }} </h2>
-		<p>{{ comment.text }}</p>
-		<p class-"text-right font-italic">{{ comment.created_at }}</p>
-	</div>
+<div class="container">
+	<h4 class="mt-5 font-italic ">new comment</h4>
+	<form method="post">
+		{% csrf_token %}
+		{% bootstrap_form form size='small' layout='inline' %}
+		{% buttons submit="add comment" %} {% endbuttons %}
+	</form>
+	{% if comments %}
+		{% for comment in comments %}
+		<div class="p-2 border">
+			<p>{{ comment.author }}</p>
+			<h2> {{ comment.title }} </h2>
+			<p>{{ comment.text }}</p>
+			<p class-"text-right font-italic">{{ comment.created_at }}</p>
+		</div>
 	{% endfor %}
 </div>
 {% endif %}

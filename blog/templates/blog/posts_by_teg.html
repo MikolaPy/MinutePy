@@ -36,7 +36,9 @@
 		</li>
 		{% endfor %}
 </ul>
+{% if page_obj.has_other_pages %} 
 {% bootstrap_pagination page_obj  pages_to_show=4 url=key %} 
+{% endif %} 
 {% endif %}
 {% endblock %}
 

@@ -22,7 +22,7 @@ class Post(models.Model):
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
     markers = models.ManyToManyField('Marker')
     image = models.ImageField(blank=True,upload_to=create_filename,
-                               verbose_name='images')
+                               verbose_name='main_images')
     author = models.ForeignKey(AdvUser,on_delete=models.CASCADE,
                                verbose_name='post author')
 
@@ -51,6 +51,21 @@ class Attachment(models.Model):
         default_related_name = 'attachments'    #include post_set in Manager
         verbose_name_plural='attacments'
         verbose_name = 'attacment'
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
+    author = models.CharField(max_length=30,verbose_name='nickname')
+    title = models.CharField(max_length=30,verbose_name='subject')
+    text = models.TextField(verbose_name='text')
+    created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
+
+    class Meta:
+        default_related_name = 'comments'
+        unique_together =  ('author','text','post')  # anti spam
+        verbose_name = 'comment'
+        verbose_name_plural = 'comments'
+        ordering = ['created_at']
+
 
 ###############################################################################################
 #

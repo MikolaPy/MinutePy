@@ -8,6 +8,7 @@ from django.views.decorators.cache import never_cache
 
 urlpatterns = [
     path('',include('blog.urls')),     #main apps url 
+    path('captcha/',include('captcha.urls')),#simple captcha
     path('admin/', admin.site.urls),
 ]
 

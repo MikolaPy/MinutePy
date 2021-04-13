@@ -4,7 +4,7 @@ from django.contrib.auth import password_validation
 from .models import *
 from django.forms import inlineformset_factory
 from .apps import user_registered_signal
-
+from captcha.fields import CaptchaField
 
 
 class PostForm(forms.ModelForm):
@@ -34,6 +34,25 @@ class MarkerForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     key = forms.CharField(required=False,max_length=20,label='')
+
+
+####################################################################################################################
+# comment post form 
+# this form addinf to detail view 
+
+class AuthCommentForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = Comment
+        widgets = {'post':forms.HiddenInput}
+
+
+class GuestCommentForm(forms.ModelForm):
+    captcha = CaptchaField(label='input text from the picture',error_messages={'invalid':'wrong try again'})
+    class Meta:
+        fields = '__all__'
+        model = Comment
+        widgets = {'post':forms.HiddenInput}
 
 
 

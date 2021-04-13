@@ -175,7 +175,23 @@ class PostByMarkerView(ListView):
 def post_detail(request,pk):
     post = Post.objects.get(pk=pk)
     attachments = post.attachments.all()
-    context = {'post':post,'attachments':attachments}
+    comments = Comment.objects.filter(post=pk)
+    initial = {'post':post.pk}
+    if request.user.is_authenticated:
+        initial['author'] = request.user.username
+        form_class = AuthCommentForm
+    else:
+        form_class = GuestCommentForm
+    form = form_class(initial=initial)
+    if request.method == 'POST':
+        c_form = form_class(request.POST)
+        if c_form.is_valid():
+            c_form.save()
+            messages.add_message(request,messages.SUCCESS,'comment created')
+        else:
+            form = c_form
+            messages.add_message(request,messages.SUCCESS,'ERROR')
+    context = {'post':post,'attachments':attachments,'comments':comments,'form':form}
     return render(request,'blog/post_detail.html',context)
 
 @login_required

@@ -16,9 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "captcha",
-    "rest_framework",
-    "corsheaders",
     "bootstrap4",
+    'api.apps.ApiConfig',       #api for blog
+    'rest_framework',           #REST 
+    'corsheaders',
     "django_cleanup",           #remove the update fiels after deleting the rec storing them
     "easy_thumbnails",          #creates thumbmails
 ]
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'

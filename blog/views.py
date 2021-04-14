@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
@@ -24,9 +25,9 @@ from .utilities import signer
 
 ####################################################################
 ##
-
-
 ## API REST
+
+
 from .serializers import *
 #for display 
 from rest_framework.response import Response
@@ -35,8 +36,8 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def api_tegs(request):
     if request.method == 'GET':
-        tegs = Teg.objects.all()
-        serializer = TegsSerializer(tegs,many=True)
+        tegs = Marker.objects.all()
+        serializer = MarkersSerializer(tegs,many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
@@ -57,7 +58,8 @@ class BBLoginView(LoginView):
 # Profile page
 @login_required
 def profile(request):
-    return render(request,'registration/profile.html')
+    posts = Post.objects.filter(author=request.user.pk)
+    return render(request,'registration/profile.html',{'posts':posts})
 
 # Change password page
 class BBPasswordChangeView(SuccessMessageMixin,LoginRequiredMixin,PasswordChangeView):
@@ -141,52 +143,101 @@ class AllPostView(ListView):
     model = Post    #all posts in object_list attr , template post_list.html
 
 
-class PostByTegView(ListView):
+class PostByMarkerView(ListView):
+    # all posts related with select marker and form search 
+    
     template_name = 'blog/posts_by_teg.html'
     context_object_name = 'posts'
     paginate_by = 4
+
+    def setup(self,request,*args,**kargs):
+        self.requist = request
+        return super().setup(request,*args,**kargs)
+
     def get_queryset(self):
-        self.post_by_teg = Post.objects.filter(tegs__name=self.kwargs['teg_name'])
-        return self.post_by_teg
+        posts = Post.objects.filter(markers__name=self.kwargs['marker_name'])
+        if 'key' in self.request.GET:
+            self.key = self.request.GET['key']
+            q = Q(title__icontains=self.key)|Q(content__icontains=self.key)
+            posts = posts.filter(q)
+        else:
+            self.key= ''
+        return posts
+
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['teg_name']=self.kwargs['teg_name']
+        marker = Marker.objects.get(name=self.kwargs['marker_name'])
+        context['marker'] = marker
+        context['form'] =  SearchForm(initial={'key':self.key})
         return context
 
 
-class PostDetailView(DetailView):
-    model = Post
+def post_detail(request,pk):
+    post = Post.objects.get(pk=pk)
+    attachments = post.attachments.all()
+    comments = Comment.objects.filter(post=pk)
+    initial = {'post':post.pk}
+    if request.user.is_authenticated:
+        initial['author'] = request.user.username
+        form_class = AuthCommentForm
+    else:
+        form_class = GuestCommentForm
+    form = form_class(initial=initial)
+    if request.method == 'POST':
+        c_form = form_class(request.POST)
+        if c_form.is_valid():
+            c_form.save()
+            messages.add_message(request,messages.SUCCESS,'comment created')
+        else:
+            form = c_form
+            messages.add_message(request,messages.SUCCESS,'ERROR')
+    context = {'post':post,'attachments':attachments,'comments':comments,'form':form}
+    return render(request,'blog/post_detail.html',context)
 
-class PostCreateView(LoginRequiredMixin,CreateView):
-    template_name = 'blog/post_create.html'
-    form_class = PostForm
-    def get_success_url(self):
-        obj = self.object.pk
-        return reverse_lazy('postdetail',kwargs = {"pk":obj})
+@login_required
+def post_create(request):
+# So that all attachents found to be releted with the post
+# we first validate and save the post form the ad itself
+# method save returns the saved record , and we pass this 
+# through the instance parameter a formset constructor
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES)
+        if form.is_valid():
+            post = form.save()
+            formset = AttFormSet(request.POST,request.FILES,instance=post)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request,messages.SUCCESS,'post created')
+                return redirect('main')
+    else:
+        form = PostForm(initial={'author':request.user.pk})
+        formset = AttFormSet()
+    context = {'form':form,'formset':formset}
+    return render(request,'blog/post_create.html',context)
 
-class PostEditView(LoginRequiredMixin,UpdateView):
-    teplate_name = 'blog/post_edit.html'
-    model = Post
-    form_class = PostForm
-    def get_success_url(self):
-        obj = self.object.pk
-        return reverse_lazy('postdetail',kwargs = {"pk":obj})
+
+
+@login_required
+def post_edit(request,pk):
+    post = Post.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES,instance=post)
+        if form.is_valid():
+            post = form.save()
+            formset = AttFormSet(request.POST,request.FILES,instance=post)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request,messages.SUCCESS,'edited post')
+                return redirect('main')
+    else:
+        form = PostForm(instance=post)
+        formset = AttFormSet(instance=post)
+    context = {'form':form,'formset':formset}
+    return render(request,'blog/post_edit.html',context)
+
 
 class PostDeleteView(LoginRequiredMixin,DeleteView):
     model= Post
-    template_name_suffix = "_delete" 
+    template_name_suffix = "_delete"
     success_url = reverse_lazy('main')
 
-@user_passes_test(lambda user : user.is_superuser)
-def tegs_edit(request):
-    TegsFormSet = modelformset_factory(Teg,fields=('name',),
-                                       can_delete=True)
-    if request.method == 'POST':
-        formset = TegsFormSet(request.POST)
-        if formset.is_valid():
-            formset.save()
-            return redirect('main')
-    else:
-        formset = TegsFormSet()
-    context = {'formset':formset}
-    return render(request,'blog/tegs_edit.html',context)

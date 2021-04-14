@@ -2,25 +2,65 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from .models import *
-
+from django.forms import inlineformset_factory
 from .apps import user_registered_signal
+from captcha.fields import CaptchaField
+
 
 class PostForm(forms.ModelForm):
-    title = forms.CharField(label='Subject')
-    content = forms.CharField(label='bodypost',widget=forms.widgets.Textarea(),required=False)
-    tegs = forms.ModelMultipleChoiceField(queryset=Teg.objects.all(),label='teg',widget=forms.widgets.CheckboxSelectMultiple(attrs={'size':10}))
-    def clean(self):
-        super().clean()
-        errors = {}
-        if not self.cleaned_data['content']:
-            errors['content'] = ValidationError('WTF there data?')
-        if errors:
-            raise ValidationError(errors)
-
+    # make author fields invisibilite
     class Meta:
         model = Post
-        fields = ('title','content','tegs')
+        fields = '__all__'
+        widgets = {'author':forms.HiddenInput}
 
+# create post formset
+AttFormSet = inlineformset_factory(Post,Attachment,fields='__all__')
+
+
+
+class MarkerForm(forms.ModelForm):
+    #make field required
+    main_section = forms.ModelChoiceField(queryset=MainSection.objects.all(),
+                                          empty_label=None, #cant chose empty
+                                          label='main section',
+                                          required=True)
+    class Meta:
+        model = Marker
+        fields = '__all__'
+
+
+
+
+class SearchForm(forms.Form):
+    key = forms.CharField(required=False,max_length=20,label='')
+
+
+####################################################################################################################
+# comment post form 
+# this form addinf to detail view 
+
+class AuthCommentForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = Comment
+        widgets = {'post':forms.HiddenInput}
+
+
+class GuestCommentForm(forms.ModelForm):
+    captcha = CaptchaField(label='input text from the picture',error_messages={'invalid':'wrong try again'})
+    class Meta:
+        fields = '__all__'
+        model = Comment
+        widgets = {'post':forms.HiddenInput}
+
+
+
+###########################################################################################
+#
+#      AUth Forms
+#
+###########################################################################################
 
 
 class UserForm(forms.ModelForm):
@@ -69,3 +109,7 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = AdvUser
         fields = ('username','first_name','last_name','password1','password2','email','send_message')
+
+
+
+

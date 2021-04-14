@@ -1,10 +1,12 @@
 {% extends "layout/basic.html" %}
-{% block title %}edit post{% endblock %}
+{% load bootstrap4 %}
+{% block title %}Edit:{{ post.title }}{% endblock %}
 {% block content %}
 <h2>Edit post</h2>
-<form method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="edit">
+<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% bootstrap_form form layout='horizontal' %}
+		{% bootstrap_formset formset layout='horizontal' %}
+		{% buttons submit='edit' %}{% endbuttons %}
 </form>
 {% endblock %}

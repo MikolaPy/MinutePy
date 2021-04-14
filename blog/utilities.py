@@ -1,6 +1,9 @@
 from django.template.loader import render_to_string
 from django.core.signing import Signer
 from MinutePy.settings import ALLOWED_HOSTS
+from datetime import datetime
+from os.path import splitext
+
 
 signer = Signer()
 
@@ -12,3 +15,10 @@ def send_activation(user):
     subject = 'activated user'
     body_text = render_to_string('email/activation_letter_body.txt',context)
     user.email_user(subject,body_text)
+
+
+
+def create_filename(instance,filename):
+    return '%s%s' % (datetime.now().timestamp(),splitext(filename)[1])
+
+

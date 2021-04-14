@@ -24,6 +24,8 @@
 								<li class="nav-item"><a class="nav-link"
 								href="{% url "login" %}">login</a></li>
 								{% else %}	
+								<li class="nav-item"><a class="nav-link"
+								href="{% url "postcreate" %}">create post</a></li>
 								<li class="nav-item dropdown">
 										<a class="nav-link dropdown-toggle"
 										data-toggle="dropdown"
@@ -49,15 +51,14 @@
 				</div>
 				<div class="row">
 						<nav class="col-md-auto nav flex-column border">
+								{% for marker in markers %}
+								{% ifchanged marker.main_section %}
 								<span class="nav-link root font-weight-bold">
-								Heдвижимость </span>
-								<a class="nav-link" href="#">Kwibe</a>
-								<a class="nav-link" Ьге1="#">Склады</a>
-								<a class="nav-link" Нге1="#">Гаражи</a>
-								<span class="nav-link root font-weight-bold" href="#">
-												  Транспорт</span>
-								<a class="nav-link" href="#">easy</a>
-								<a class="nav-link" href="#">breazy:ft</a>
+								{{ marker.main_section.name }}
+								{% endifchanged %}
+								<a class="nav-link" href="{% url 'by_marker' marker_name=marker.name %}">
+									{{ marker.name }}</a>
+								{% endfor %}
 						</nav>
 						<section class="col border py-2">
 								{% bootstrap_messages %}

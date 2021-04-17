@@ -13,7 +13,7 @@ urlpatterns = [
     path('accounts/register/activate/<str:sign>/',user_activate,name='register_activate'),
     path('accounts/delete/',DeleteUserView.as_view(),name='delete_user'),
 
-    path('',AllPostView.as_view(),name='main'),
+    path('',MainPageView.as_view(),name='main'),
     path('marker/<str:marker_name>/',PostByMarkerView.as_view(),name='by_marker'),
 
     path('post/create/',post_create,name='postcreate'),

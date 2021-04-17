@@ -16,6 +16,9 @@ class AdvUser(AbstractUser):
         super().delete(*args,**kargs)
 
 
+
+
+
 class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
@@ -52,12 +55,13 @@ class Attachment(models.Model):
         verbose_name_plural='attacments'
         verbose_name = 'attacment'
 
+
 class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
     author = models.CharField(max_length=30,verbose_name='nickname')
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
-    created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
+    created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='-created at')
 
     class Meta:
         default_related_name = 'comments'

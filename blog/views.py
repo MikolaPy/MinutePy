@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q,Count
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
@@ -58,7 +58,8 @@ class BBLoginView(LoginView):
 # Profile page
 @login_required
 def profile(request):
-    posts = Post.objects.filter(author=request.user.pk)
+    # add annotate attribute to post list 
+    posts = Post.objects.filter(author=request.user.pk).annotate(num_comments=Count("comments"))
     return render(request,'registration/profile.html',{'posts':posts})
 
 # Change password page
@@ -75,9 +76,9 @@ class EditUserView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
     success_url = reverse_lazy('profile')
     success_message = 'Change edit'
     
-    def setup(self,request,*args,**kargs): # easy way get user
+    def setup(self,request,*args,**kwargs): # easy way get user
         self.user_id = request.user.pk
-        return super().setup(request,*args,**kargs)
+        return super().setup(request,*args,**kwargs)
     def get_object(self,queryset=None):
         if not queryset:
             queryset = self.get_queryset()
@@ -117,17 +118,17 @@ class DeleteUserView(LoginRequiredMixin,DeleteView):
     template_name = 'registration/delete_user.html'
     success_url = reverse_lazy('main')
 
-    def setup(self,request,*args,**kargs):
+    def setup(self,request,*args,**kwargs):
         #save id user from requst
         self.user_id = request.user.pk
-        return super().setup(request,*args,**kargs)
+        return super().setup(request,*args,**kwargs)
 
-    def post(self,request,*args,**kargs):
+    def post(self,request,*args,**kwargs):
         #logout from site profile via built-in function
         logout(request)
         #message successful delete user
         messages.add_message(request,messages.SUCCESS,'user delete')
-        return super().post(request,*args,**kargs)
+        return super().post(request,*args,**kwargs)
     def get_object(self,queryset=None):
         if not queryset:
             queryset = self.get_queryset()
@@ -137,10 +138,17 @@ class DeleteUserView(LoginRequiredMixin,DeleteView):
 #######################################################################
 
 
-class AllPostView(ListView):
-    paginate_by = 4
+class MainPageView(ListView):
     context_object_name = 'posts'
-    model = Post    #all posts in object_list attr , template post_list.html
+
+    def get_queryset(self):
+        return Post.objects.all()[:4]
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = Comment.objects.order_by("created_at")
+        return context
+
 
 
 class PostByMarkerView(ListView):
@@ -150,9 +158,9 @@ class PostByMarkerView(ListView):
     context_object_name = 'posts'
     paginate_by = 4
 
-    def setup(self,request,*args,**kargs):
+    def setup(self,request,*args,**kwargs):
         self.requist = request
-        return super().setup(request,*args,**kargs)
+        return super().setup(request,*args,**kwargs)
 
     def get_queryset(self):
         posts = Post.objects.filter(markers__name=self.kwargs['marker_name'])

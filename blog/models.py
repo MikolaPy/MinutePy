@@ -61,7 +61,7 @@ class Comment(models.Model):
     author = models.CharField(max_length=30,verbose_name='nickname')
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
-    created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='-created at')
+    created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
 
     class Meta:
         default_related_name = 'comments'

@@ -60,6 +60,7 @@ class BBLoginView(LoginView):
 def profile(request):
     # add annotate attribute to post list 
     posts = Post.objects.filter(author=request.user.pk).annotate(num_comments=Count("comments"))
+    posts = posts.values("title","num_comments","pk","published")
     return render(request,'registration/profile.html',{'posts':posts})
 
 # Change password page

@@ -11,7 +11,8 @@
 {% endif %}
 <h3>All posts : {{ posts.count }} </h3>
 {% for post in posts %}
-<p><a href=" {% url "postdetail" post.pk %}"> {{ post.title }} comments: {{ post.num_comments }} </a><p> 
+<p><a href=" {% url "postdetail" pk=post.pk %}"> {{ post.title }}</a></p>
+<p>Date : {{ post.published }} Comments: {{ post.num_comments }} </p> 
 
 {% endfor %} 
 {% endblock %}

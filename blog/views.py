@@ -59,8 +59,7 @@ class BBLoginView(LoginView):
 @login_required
 def profile(request):
     # add annotate attribute to post list 
-    posts = Post.objects.filter(author=request.user.pk).annotate(num_comments=Count("comments"))
-    posts = posts.values("title","num_comments","pk","published")
+    posts = Post.objects.only("title","pk","published").filter(author=request.user.pk).annotate(num_comments=Count("comments"))
     return render(request,'registration/profile.html',{'posts':posts})
 
 # Change password page
@@ -182,9 +181,9 @@ class PostByMarkerView(ListView):
 
 
 def post_detail(request,pk):
-    post = Post.objects.get(pk=pk)
+    post = Post.objects.prefetch_related("comments","attachments").get(pk=pk)
     attachments = post.attachments.all()
-    comments = Comment.objects.filter(post=pk)
+    comments = post.comments.all() 
     initial = {'post':post.pk}
     if request.user.is_authenticated:
         initial['author'] = request.user.username

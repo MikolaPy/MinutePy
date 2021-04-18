@@ -41,9 +41,14 @@ class Post(models.Model):
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']
+        abstract = False
+
     def __str__(self):
         return self.title
 
+
+class News(Post):
+    markers = None
 
 class Attachment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='attachments')
@@ -81,7 +86,6 @@ class Comment(models.Model):
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
         ordering = ['created_at']
-
 
 ###############################################################################################
 #

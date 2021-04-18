@@ -181,7 +181,7 @@ class PostByMarkerView(ListView):
 
 
 def post_detail(request,pk):
-    post = Post.objects.prefetch_related("comments","attachments").get(pk=pk)
+    post = Post.objects.prefetch_related("comments","attachments","likes").get(pk=pk)
     attachments = post.attachments.all()
     comments = post.comments.all() 
     initial = {'post':post.pk}

@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey,GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from .utilities import *
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -16,9 +18,6 @@ class AdvUser(AbstractUser):
         super().delete(*args,**kargs)
 
 
-
-
-
 class Post(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
@@ -28,13 +27,13 @@ class Post(models.Model):
                                verbose_name='main_images')
     author = models.ForeignKey(AdvUser,on_delete=models.CASCADE,
                                verbose_name='post author')
+    likes = GenericRelation('Like')
 
     def delete(self,*args,**kargs):
         #when post delete we delete related record in investmant model from db
         for im in self.attachments.all():
             im.delete()
         super().delete(*args,**kargs)
-
 
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
@@ -56,12 +55,25 @@ class Attachment(models.Model):
         verbose_name = 'attacment'
 
 
+class Like(models.Model):
+    user = models.OneToOneField(AdvUser,on_delete=models.CASCADE,verbose_name="user")
+    content_type = models.ForeignKey(ContentType,on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    like_object = GenericForeignKey(ct_field="content_type",fk_field="object_id")
+
+    class Meta:
+        verbose_name = "like"
+        verbose_name_plural = "likes"
+        unique_together = ("user","object_id")
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
     author = models.CharField(max_length=30,verbose_name='nickname')
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
     created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
+    likes = GenericRelation("Like")
 
     class Meta:
         default_related_name = 'comments'

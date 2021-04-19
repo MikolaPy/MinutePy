@@ -1,8 +1,12 @@
-# Django #
 *.log
 *.pot
 *.pyc
 __pycache__/
+<<<<<<< HEAD:.gitignor
+=======
+blog/__pycache__/
+media
+>>>>>>> models:.gitignore
 
 # Backup files # 
 *.bak 

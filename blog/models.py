@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey,GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from .utilities import *
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -25,6 +27,7 @@ class Post(models.Model):
                                verbose_name='main_images')
     author = models.ForeignKey(AdvUser,on_delete=models.CASCADE,
                                verbose_name='post author')
+    likes = GenericRelation('Like')
 
     def delete(self,*args,**kargs):
         #when post delete we delete related record in investmant model from db
@@ -32,16 +35,20 @@ class Post(models.Model):
             im.delete()
         super().delete(*args,**kargs)
 
-
     class Meta:
         unique_together = ('title','content')   #unique title + contetn
         default_related_name = 'posts'          #include post_set in Manager
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']
+        abstract = False
+
     def __str__(self):
         return self.title
 
+
+class News(Post):
+    markers = None
 
 class Attachment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='attachments')
@@ -52,12 +59,26 @@ class Attachment(models.Model):
         verbose_name_plural='attacments'
         verbose_name = 'attacment'
 
+
+class Like(models.Model):
+    user = models.OneToOneField(AdvUser,on_delete=models.CASCADE,verbose_name="user")
+    content_type = models.ForeignKey(ContentType,on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    like_object = GenericForeignKey(ct_field="content_type",fk_field="object_id")
+
+    class Meta:
+        verbose_name = "like"
+        verbose_name_plural = "likes"
+        unique_together = ("user","object_id")
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
     author = models.CharField(max_length=30,verbose_name='nickname')
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
     created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
+    likes = GenericRelation("Like")
 
     class Meta:
         default_related_name = 'comments'
@@ -65,7 +86,6 @@ class Comment(models.Model):
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
         ordering = ['created_at']
-
 
 ###############################################################################################
 #

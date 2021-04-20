@@ -73,16 +73,18 @@ class Like(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
     author = models.CharField(max_length=30,verbose_name='nickname')
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
     created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
     likes = GenericRelation("Like")
+    parent = models.ForeignKey('self',on_delete=models.SET_NULL,verbose_name='parant comment',
+                       blank=True,null=True)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
 
     class Meta:
         default_related_name = 'comments'
-        unique_together =  ('author','text','post')  # anti spam
+        unique_together =  ('author','text','post')
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
         ordering = ['created_at']

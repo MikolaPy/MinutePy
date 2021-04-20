@@ -44,7 +44,7 @@ class AuthCommentForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
         model = Comment
-        widgets = {'post':forms.HiddenInput}
+        widgets = {'post':forms.HiddenInput,'parent':forms.HiddenInput}
 
 
 class GuestCommentForm(forms.ModelForm):
@@ -52,7 +52,7 @@ class GuestCommentForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
         model = Comment
-        widgets = {'post':forms.HiddenInput}
+        widgets = {'post':forms.HiddenInput,'parent':forms.HiddenInput}
 
 
 

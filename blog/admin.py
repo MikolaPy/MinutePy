@@ -3,6 +3,11 @@ from .models import *
 from .forms import *
 
 
+@admin.register(Marker)
+class MarkerAdmin(admin.ModelAdmin):
+    form = MarkerForm  #this field main_section required 
+
+#main section and markers together
 class MarkerInline(admin.TabularInline):
 # Built-in editor is similar setform
 # On the page editing a record primary model
@@ -20,11 +25,7 @@ class MainSectionAdmin(admin.ModelAdmin):
     inlines = (MarkerInline,)
 
 
-@admin.register(Marker)
-class MarkerAdmin(admin.ModelAdmin):
-    form = MarkerForm  #this field main_section required 
-
-
+#attacments and post together
 class AttachmentAdmin(admin.TabularInline):
     model = Attachment
 
@@ -32,7 +33,6 @@ class AttachmentAdmin(admin.TabularInline):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title','content','author','published')
-
     fields =  (('markers','author'),'title','content','image')
     inlines = (AttachmentAdmin,)
 

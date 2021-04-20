@@ -4,6 +4,7 @@ from .utilities import *
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 # auth_model_user in setting for access setting
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True,db_index=True)
@@ -18,16 +19,25 @@ class AdvUser(AbstractUser):
         super().delete(*args,**kargs)
 
 
-class Post(models.Model):
+#parent model for Post and News models
+class Records(models.Model):
     title = models.CharField(max_length = 50,verbose_name='sobject',blank=True)
     content = models.TextField(blank=True,null=True,verbose_name='text')
     published = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='date')
-    markers = models.ManyToManyField('Marker')
     image = models.ImageField(blank=True,upload_to=create_filename,
                                verbose_name='main_images')
     author = models.ForeignKey(AdvUser,on_delete=models.CASCADE,
                                verbose_name='post author')
-    likes = GenericRelation('Like')
+
+    def __str__(self):
+        return self.title
+    class Meta:
+        abstract = True
+
+
+class Post(Records):
+    markers = models.ManyToManyField('Marker')
+    likes = GenericRelation('Like')                             #access relation to Likes models 
 
     def delete(self,*args,**kargs):
         #when post delete we delete related record in investmant model from db
@@ -36,19 +46,17 @@ class Post(models.Model):
         super().delete(*args,**kargs)
 
     class Meta:
-        unique_together = ('title','content')   #unique title + contetn
         default_related_name = 'posts'          #include post_set in Manager
         verbose_name_plural = 'Posts'
         verbose_name = 'Post'
         ordering = ['-published']
-        abstract = False
 
-    def __str__(self):
-        return self.title
+#dont work ??????????????
+class News(Records):
+    class Meta:
+        verbose_name = "news"
+        verbose_name_plural = "news"
 
-
-class News(Post):
-    markers = None
 
 class Attachment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='attachments')
@@ -77,10 +85,10 @@ class Comment(models.Model):
     title = models.CharField(max_length=30,verbose_name='subject')
     text = models.TextField(verbose_name='text')
     created_at = models.DateTimeField(auto_now_add=True,db_index=True,verbose_name='created at')
-    likes = GenericRelation("Like")
     parent = models.ForeignKey('self',on_delete=models.SET_NULL,verbose_name='parant comment',
                        blank=True,null=True)
     post = models.ForeignKey(Post,on_delete=models.CASCADE,verbose_name='post')
+    likes = GenericRelation("Like")
 
     class Meta:
         default_related_name = 'comments'
